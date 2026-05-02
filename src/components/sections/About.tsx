@@ -11,10 +11,10 @@ export default function About() {
   const { lang, isArabic } = useLang();
 
   const fade = (delay: number) => ({
-    initial:    { opacity: 0, y: 30 },
-    animate:    inView ? { opacity: 1, y: 0 } : {},
-    transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1], delay },
-  });
+  initial:    { opacity: 0, y: 30 },
+  animate:    inView ? { opacity: 1, y: 0 } : {},
+  transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay },
+});
 
   const stats = t.about.stats.map(s => ({ value: s.value, label: s[lang] }));
   const skills = t.about.skills.map(g => ({ category: g[lang], items: g.items[lang] }));
