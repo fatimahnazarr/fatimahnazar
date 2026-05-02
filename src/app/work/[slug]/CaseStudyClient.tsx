@@ -524,7 +524,7 @@ export default function CaseStudyClient({ project }: { project: Project }) {
           </FadeSection>
 
           {/* ── Case study sections ── */}
-          {project.sections.map((section, i) => (
+          {(project.sections ?? []).map((section, i) => (
             <CaseSection
               key={section.type}
               section={section}
