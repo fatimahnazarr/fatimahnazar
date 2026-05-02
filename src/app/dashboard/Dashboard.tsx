@@ -29,11 +29,14 @@ type Project = {
   titleAr?:    string;
   slug:        string;
   role:        string;
+  roleAr?:     string;  
   year:        string;
   type:        string;
   tags:        string | string[];
   desc:        string;
+  descAr?:     string;   
   overview?:   string;
+  overviewAr?: string;    
   color?:      string;
   accent?:     string;
   liveUrl?:    string;
