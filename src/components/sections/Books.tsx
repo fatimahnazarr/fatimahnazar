@@ -13,7 +13,7 @@ export default function Books() {
   const fade = (delay: number) => ({
     initial:    { opacity: 0, y: 30 },
     animate:    inView ? { opacity: 1, y: 0 } : {},
-    transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1], delay },
+    transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay },
   });
 
   const books = t.books.books.map(b => ({
@@ -102,7 +102,7 @@ export default function Books() {
       <motion.div
         initial={{ scaleX: 0 }}
         animate={inView ? { scaleX: 1 } : {}}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 0.3 }}
         style={{
           position:        'absolute',
           bottom:          0,
@@ -130,7 +130,7 @@ function BookCard({
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay }}
+      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay }}
       whileHover="hover"
       style={{
         display:      'flex',

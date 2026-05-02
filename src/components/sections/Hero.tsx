@@ -8,7 +8,7 @@ import { t } from '@/lib/translations';
 const stagger = (i: number, base = 0.8) => ({
   initial:    { opacity: 0, y: 40 },
   animate:    { opacity: 1, y: 0  },
-  transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: base + i * 0.12 },
+  transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: base + i * 0.12 },
 });
 
 export default function Hero() {
@@ -122,7 +122,7 @@ export default function Hero() {
           <motion.h1
             initial={{    y: '100%' }}
             animate={{    y: '0%'   }}
-            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.85 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 0.85 }}
             style={{
               fontFamily:  'var(--font-display)',
               fontSize:    'var(--text-hero)',

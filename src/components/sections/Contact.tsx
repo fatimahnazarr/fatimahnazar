@@ -26,7 +26,7 @@ export default function Contact() {
   const fade = (delay: number) => ({
     initial:    { opacity: 0, y: 30 },
     animate:    inView ? { opacity: 1, y: 0 } : {},
-    transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1], delay },
+    transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -139,7 +139,7 @@ export default function Contact() {
                 rel="noopener noreferrer"
                 initial={{ opacity: 0, x: isArabic ? 20 : -20 }}
                 animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.3 + i * 0.07 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 0.3 + i * 0.07 }}
                 whileHover={{ backgroundColor: 'rgba(201,185,154,0.05)' }}
                 style={{
                   display:        'flex',
