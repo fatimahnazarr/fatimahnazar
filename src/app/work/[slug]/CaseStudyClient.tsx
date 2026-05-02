@@ -2,8 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import type { Project } from '@/lib/projects';
-import { projects } from '@/lib/projects';
+import type { Project } from '@/lib/types';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -18,55 +17,41 @@ const sectionIcons: Record<string, string> = {
   gallery:  '▣',
 };
 
+
 export default function CaseStudyClient({ project }: { project: Project }) {
-  const currentIndex = projects.findIndex(p => p.slug === project.slug);
-  const prevProject  = projects[currentIndex - 1];
-  const nextProject  = projects[currentIndex + 1];
+
 
   return (
     <main style={{ background: 'var(--color-bg)', minHeight: '100vh' }}>
 
-      {/* ── Back button ── */}
-      <div style={{
-        position:   'fixed',
-        top:        'calc(var(--navbar-h) + var(--space-4))',
-        left:       'var(--space-8)',
-        zIndex:     50,
-      }}>
-        <Link href="/#work">
-          <motion.div
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0   }}
-            transition={{ delay: 0.3 }}
-            style={{
-              display:       'flex',
-              alignItems:    'center',
-              gap:           'var(--space-2)',
-              fontFamily:    'var(--font-mono)',
-              fontSize:      'var(--text-xs)',
-              color:         'var(--color-muted)',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              padding:       '8px 14px',
-              border:        '1px solid var(--color-border)',
-              borderRadius:  'var(--radius-sm)',
-              background:    'rgba(14,14,14,0.8)',
-              backdropFilter:'blur(8px)',
-              transition:    'color 200ms, border-color 200ms',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.color       = 'var(--color-accent)';
-              e.currentTarget.style.borderColor = 'var(--color-accent)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.color       = 'var(--color-muted)';
-              e.currentTarget.style.borderColor = 'var(--color-border)';
-            }}
-          >
-            ← Back
-          </motion.div>
-        </Link>
-      </div>
+      {/* ── Back to Work ── */}
+<div style={{
+  margin:    'var(--space-8)',
+  textAlign: 'center',
+}}>
+  <Link href="/#work">
+    <motion.div
+      whileHover={{ borderColor: 'var(--color-accent)', color: 'var(--color-accent)' }}
+      style={{
+        display:       'inline-flex',
+        alignItems:    'center',
+        gap:           'var(--space-2)',
+        padding:       '12px 28px',
+        border:        '1px solid var(--color-border)',
+        borderRadius:  'var(--radius-sm)',
+        fontFamily:    'var(--font-mono)',
+        fontSize:      'var(--text-xs)',
+        color:         'var(--color-muted)',
+        letterSpacing: '0.1em',
+        textTransform: 'uppercase',
+        transition:    'all 250ms',
+        cursor:        'pointer',
+      }}
+    >
+      ← Back to Work
+    </motion.div>
+  </Link>
+</div>
 
       {/* ── Coming Soon State ── */}
       {project.comingSoon ? (
@@ -196,17 +181,17 @@ export default function CaseStudyClient({ project }: { project: Project }) {
                 marginBottom:   'var(--space-8)',
               }}
             >
-              {project.tags.map(tag => (
-                <span key={tag} style={{
-                  fontFamily:    'var(--font-mono)',
-                  fontSize:      'var(--text-xs)',
-                  color:         'var(--color-muted)',
-                  border:        '1px solid var(--color-border)',
-                  borderRadius:  '100px',
-                  padding:       '3px 10px',
-                  letterSpacing: '0.05em',
-                }}>{tag}</span>
-              ))}
+              {(project.tags ?? []).map(tag => (
+  <span key={tag} style={{
+    fontFamily:    'var(--font-mono)',
+    fontSize:      'var(--text-xs)',
+    color:         'var(--color-muted)',
+    border:        '1px solid var(--color-border)',
+    borderRadius:  '100px',
+    padding:       '3px 10px',
+    letterSpacing: '0.05em',
+  }}>{tag}</span>
+))}
             </motion.div>
 
             {/* Status badge */}
@@ -366,7 +351,7 @@ export default function CaseStudyClient({ project }: { project: Project }) {
                   fontSize:      'var(--text-xs)',
                   color:         'var(--color-muted)',
                   letterSpacing: '0.1em',
-                }}>{project.id} / {String(projects.length).padStart(2, '0')}</span>
+                }}>{project.year}</span>
                 <span style={{
                   fontFamily:    'var(--font-mono)',
                   fontSize:      'var(--text-xs)',
@@ -555,73 +540,6 @@ export default function CaseStudyClient({ project }: { project: Project }) {
             background: 'var(--color-border)',
             margin:     '0 var(--space-8)',
           }} />
-
-          {/* ── Prev / Next navigation ── */}
-          <div style={{
-            display:             'grid',
-            gridTemplateColumns: prevProject ? '1fr 1fr' : '1fr',
-            gap:                 '1px',
-            background:          'var(--color-border)',
-            margin:              'var(--space-8)',
-            borderRadius:        'var(--radius-md)',
-            overflow:            'hidden',
-          }}>
-            {prevProject && (
-              <Link href={`/work/${prevProject.slug}`}>
-                <motion.div
-                  whileHover={{ backgroundColor: 'rgba(201,185,154,0.04)' }}
-                  style={{
-                    padding:    'var(--space-8)',
-                    background: 'var(--color-surface)',
-                    transition: 'background 250ms',
-                  }}
-                >
-                  <p style={{
-                    fontFamily:    'var(--font-mono)',
-                    fontSize:      'var(--text-xs)',
-                    color:         'var(--color-muted)',
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    marginBottom:  'var(--space-3)',
-                  }}>← Previous</p>
-                  <p style={{
-                    fontFamily:  'var(--font-display)',
-                    fontSize:    'var(--text-xl)',
-                    fontWeight:  300,
-                    color:       'var(--color-text)',
-                  }}>{prevProject.title}</p>
-                </motion.div>
-              </Link>
-            )}
-            {nextProject && (
-              <Link href={`/work/${nextProject.slug}`}>
-                <motion.div
-                  whileHover={{ backgroundColor: 'rgba(201,185,154,0.04)' }}
-                  style={{
-                    padding:    'var(--space-8)',
-                    background: 'var(--color-surface)',
-                    textAlign:  'right',
-                    transition: 'background 250ms',
-                  }}
-                >
-                  <p style={{
-                    fontFamily:    'var(--font-mono)',
-                    fontSize:      'var(--text-xs)',
-                    color:         'var(--color-muted)',
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    marginBottom:  'var(--space-3)',
-                  }}>Next →</p>
-                  <p style={{
-                    fontFamily:  'var(--font-display)',
-                    fontSize:    'var(--text-xl)',
-                    fontWeight:  300,
-                    color:       'var(--color-text)',
-                  }}>{nextProject.title}</p>
-                </motion.div>
-              </Link>
-            )}
-          </div>
 
           <div style={{ height: 'var(--space-16)' }} />
         </>
