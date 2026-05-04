@@ -11,7 +11,6 @@ type FormState = 'idle' | 'loading' | 'success' | 'error';
 const socials = [
   { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/fatimah-nazar',  handle: '@fatimah-nazar' },
   { label: 'Instagram', href: 'https://www.instagram.com/fatimahnazarr?igsh=MTd6cmJ1Nzc3M2d1dg==',     handle: '@fatimahnazar'  },
-  { label: 'GitHub',    href: 'https://github.com/fatimahnazar',            handle: '@fatimahnazar'  },
   { label: 'Behance',   href: 'https://www.behance.net/fatimanazad55e',       handle: '@fatimahnazar'  },
 ];
 
