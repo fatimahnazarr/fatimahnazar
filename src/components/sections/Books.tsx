@@ -51,12 +51,12 @@ export default function Books() {
 
       {/* Heading */}
       <div style={{
-        display:             'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap:                 'var(--space-16)',
-        alignItems:          'end',
-        marginBottom:        'var(--space-16)',
-      }}>
+  display:             'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
+  gap:                 'var(--space-8)',
+  alignItems:          'end',
+  marginBottom:        'var(--space-12)',
+}}>
         <motion.h2 {...fade(0.1)} style={{
           fontFamily:  isArabic ? 'var(--font-arabic)' : 'var(--font-display)',
           fontSize:    'var(--text-3xl)',
@@ -82,10 +82,10 @@ export default function Books() {
 
       {/* Book cards */}
       <div style={{
-        display:             'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap:                 'var(--space-6)',
-      }}>
+  display:             'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))',
+  gap:                 'var(--space-6)',
+}}>
         {books.map((book, i) => (
           <BookCard
             key={book.title}

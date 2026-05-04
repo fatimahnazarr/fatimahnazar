@@ -45,12 +45,12 @@ export default function About() {
 
       {/* Top grid */}
       <div style={{
-        display:             'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap:                 'var(--space-16)',
-        marginBottom:        'var(--space-24)',
-        alignItems:          'start',
-      }}>
+  display:             'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))',
+  gap:                 'var(--space-8)',
+  marginBottom:        'var(--space-16)',
+  alignItems:          'start',
+}}>
         {/* Bio */}
         <div>
           <motion.h2 {...fade(0.1)} style={{
@@ -88,14 +88,14 @@ export default function About() {
 
         {/* Stats */}
         <div style={{
-          display:             'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap:                 '1px',
-          background:          'var(--color-border)',
-          border:              '1px solid var(--color-border)',
-          borderRadius:        'var(--radius-md)',
-          overflow:            'hidden',
-        }}>
+  display:             'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+  gap:                 '1px',
+  background:          'var(--color-border)',
+  border:              '1px solid var(--color-border)',
+  borderRadius:        'var(--radius-md)',
+  overflow:            'hidden',
+}}>
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -142,10 +142,10 @@ export default function About() {
         </motion.p>
 
         <div style={{
-          display:             'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap:                 'var(--space-4)',
-        }}>
+  display:             'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
+  gap:                 'var(--space-4)',
+}}>
           {skills.map((group, i) => (
             <motion.div
               key={group.category}

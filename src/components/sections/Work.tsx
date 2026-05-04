@@ -11,13 +11,24 @@ import { t }                           from '@/lib/translations';
 import type { Project }                from '@/lib/types';
 
 export default function Work() {
-  const sectionRef       = useRef<HTMLElement>(null);
-  const trackRef         = useRef<HTMLDivElement>(null);
+  const sectionRef         = useRef<HTMLElement>(null);
+  const trackRef           = useRef<HTMLDivElement>(null);
   const { lang, isArabic } = useLang();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading,  setLoading]  = useState(true);
 
-  // Fetch visible projects from Firestore
+  // ── All state declarations first ──
+  const [projects,     setProjects]     = useState<Project[]>([]);
+  const [loading,      setLoading]      = useState(true);
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  // ── Mobile detection ──
+  useEffect(() => {
+    const check = () => setIsMobileView(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // ── Firestore fetch ──
   useEffect(() => {
     const q = query(
       collection(db, 'projects'),
@@ -30,32 +41,41 @@ export default function Work() {
     });
   }, []);
 
-  // GSAP horizontal scroll
+  // ── GSAP horizontal scroll ──
   useEffect(() => {
     const section = sectionRef.current;
     const track   = trackRef.current;
-    if (!section || !track || loading || projects.length === 0) return;
+    if (!section || !track || loading || projects.length === 0 || isMobileView) return;
 
-    const totalScroll = track.scrollWidth - window.innerWidth;
+    const timeout = setTimeout(() => {
+      const totalScroll = track.scrollWidth - window.innerWidth;
+      if (totalScroll <= 0) return;
 
-    const ctx = gsap.context(() => {
-      gsap.to(track, {
-        x:    isArabic ? totalScroll : -totalScroll,
-        ease: 'none',
-        scrollTrigger: {
-          trigger:       section,
-          start:         'top top',
-          end:           () => `+=${totalScroll}`,
-          pin:           true,
-          scrub:         1.2,
-          anticipatePin: 1,
-        },
-      });
-    }, section);
+      const ctx = gsap.context(() => {
+        gsap.to(track, {
+          x:    isArabic ? totalScroll : -totalScroll,
+          ease: 'none',
+          scrollTrigger: {
+            trigger:       section,
+            start:         'top top',
+            end:           () => `+=${totalScroll}`,
+            pin:           true,
+            scrub:         1.2,
+            anticipatePin: 1,
+          },
+        });
+      }, section);
 
-    return () => ctx.revert();
-  }, [isArabic, loading, projects]);
+      return () => ctx.revert();
+    }, 100);
 
+    return () => {
+      clearTimeout(timeout);
+      ScrollTrigger.getAll().forEach(st => st.kill());
+    };
+  }, [isArabic, loading, projects, isMobileView]);
+
+  // ── Loading state ──
   if (loading) {
     return (
       <section id="work" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)' }}>
@@ -65,6 +85,91 @@ export default function Work() {
     );
   }
 
+  // ── Mobile layout ──
+  if (isMobileView) {
+    return (
+      <section id="work" style={{ background: 'var(--color-bg)', padding: 'var(--space-16) var(--space-6)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-10)' }}>
+          <span style={{ fontFamily: isArabic ? 'var(--font-arabic)' : 'var(--font-mono)', fontSize: 'var(--text-xs)', color: 'var(--color-accent)', letterSpacing: isArabic ? '0' : '0.2em', textTransform: 'uppercase' }}>
+            {t.work.label[lang]}
+          </span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: 'var(--color-muted)' }}>
+            0{projects.length} {isArabic ? 'مشروع' : 'Projects'}
+          </span>
+        </div>
+
+        <h2 style={{ fontFamily: isArabic ? 'var(--font-arabic)' : 'var(--font-display)', fontSize: 'var(--text-2xl)', fontWeight: 300, color: 'var(--color-text)', lineHeight: 1.2, marginBottom: 'var(--space-4)' }}>
+          {t.work.heading[lang]}{' '}
+          <em style={{ color: 'var(--color-accent)' }}>{t.work.headingEm[lang]}</em>
+        </h2>
+
+        <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-subtle)', lineHeight: 1.7, fontFamily: isArabic ? 'var(--font-arabic)' : 'var(--font-body)', marginBottom: 'var(--space-10)' }}>
+          {t.work.desc[lang]}
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          {projects.map((project, i) => (
+            <Link key={project.id} href={`/work/${project.slug}`} style={{ textDecoration: 'none' }}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: i * 0.05 }}
+                style={{
+                  background:   project.color || '#111',
+                  border:       '1px solid var(--color-border)',
+                  borderRadius: 'var(--radius-lg)',
+                  padding:      'var(--space-6)',
+                  position:     'relative',
+                  overflow:     'hidden',
+                  textAlign:    isArabic ? 'right' : 'left',
+                }}
+              >
+                {/* Glow */}
+                <div style={{
+                  position:      'absolute',
+                  inset:         0,
+                  background:    `radial-gradient(ellipse 60% 50% at 50% 100%, ${project.accent || '#c9b99a'}18 0%, transparent 70%)`,
+                  pointerEvents: 'none',
+                }} />
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)', flexDirection: isArabic ? 'row-reverse' : 'row' }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: 'var(--color-muted)', letterSpacing: '0.1em' }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: 'var(--color-muted)' }}>
+                    {project.year}
+                  </span>
+                </div>
+
+                <h3 style={{ fontFamily: isArabic ? 'var(--font-arabic)' : 'var(--font-display)', fontSize: 'var(--text-xl)', fontWeight: 300, color: 'var(--color-text)', marginBottom: 'var(--space-2)', lineHeight: 1.2 }}>
+                  {project.title}
+                </h3>
+
+                <p style={{ fontFamily: isArabic ? 'var(--font-arabic)' : 'var(--font-mono)', fontSize: 'var(--text-xs)', color: project.accent || 'var(--color-accent)', letterSpacing: isArabic ? '0' : '0.1em', textTransform: 'uppercase', marginBottom: 'var(--space-3)' }}>
+                  {isArabic && project.roleAr ? project.roleAr : project.role}
+                </p>
+
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-subtle)', lineHeight: 1.7, fontFamily: isArabic ? 'var(--font-arabic)' : 'var(--font-body)', marginBottom: 'var(--space-4)' }}>
+                  {isArabic && project.descAr ? project.descAr : project.desc}
+                </p>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)', justifyContent: isArabic ? 'flex-end' : 'flex-start' }}>
+                  {(project.tags ?? []).map(tag => (
+                    <span key={tag} style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: 'var(--color-muted)', border: '1px solid var(--color-border)', borderRadius: '100px', padding: '3px 10px', letterSpacing: '0.05em' }}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            </Link>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  // ── Desktop layout ──
   return (
     <section
       ref={sectionRef}
@@ -177,7 +282,8 @@ function ProjectCard({ project, index, isArabic }: {
     development: '{ }',
     both:        '◈',
   };
-const { lang } = useLang();
+  const { lang } = useLang();
+
   return (
     <Link href={`/work/${project.slug}`} style={{ textDecoration: 'none' }}>
       <motion.div
@@ -277,7 +383,8 @@ const { lang } = useLang();
             color:      'var(--color-subtle)',
             lineHeight: 1.7,
             fontFamily: isArabic ? 'var(--font-arabic)' : 'var(--font-body)',
-}}>{isArabic && project.descAr ? project.descAr : project.desc}</p>        </div>
+          }}>{isArabic && project.descAr ? project.descAr : project.desc}</p>
+        </div>
 
         {/* Tags */}
         <div style={{
@@ -286,7 +393,7 @@ const { lang } = useLang();
           gap:            'var(--space-2)',
           justifyContent: isArabic ? 'flex-end' : 'flex-start',
         }}>
-          {project.tags?.map(tag => (
+          {(project.tags ?? []).map(tag => (
             <span key={tag} style={{
               fontFamily:    'var(--font-mono)',
               fontSize:      'var(--text-xs)',

@@ -91,11 +91,11 @@ export default function Contact() {
       </motion.p>
 
       <div style={{
-        display:             'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap:                 'var(--space-16)',
-        alignItems:          'start',
-      }}>
+  display:             'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))',
+  gap:                 'var(--space-8)',
+  alignItems:          'start',
+}}>
         {/* Left — heading + socials */}
         <div>
           <motion.h2 {...fade(0.1)} style={{
